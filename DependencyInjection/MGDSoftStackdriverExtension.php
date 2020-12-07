@@ -38,13 +38,11 @@ class MGDSoftStackdriverExtension extends Extension
         $gcloudCrendentials= json_decode(file_get_contents($credentialsFile), true);
 
         $loggingClientOptions['keyFile']      = $gcloudCrendentials;
-        $loggingClientOptions['projectId']    = $gcloudCrendentials['proyect_id'];
+        $loggingClientOptions['projectId']    = $gcloudCrendentials['project_id'];
         // batch multiple logs into one single RPC calls:
         $loggingClientOptions['batchEnabled'] = true;
 
         $client = new LoggingClient($loggingClientOptions);
-        $container->addDefinitions([
-            new Definition($client)
-        ]);
+        $container->addDefinitions([ new Definition($client) ]);
     }
 }
