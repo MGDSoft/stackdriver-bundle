@@ -13,11 +13,14 @@
     "autoload":{
         "psr-4":{
             "MGDSoft\\Stackdriver\\": ""
-        }
+        },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
-            "MGDSoft\\Stackdriver\\Tests\\": "tests/"
+            "Tests\\": "tests/"
         }
     },
     "require": {

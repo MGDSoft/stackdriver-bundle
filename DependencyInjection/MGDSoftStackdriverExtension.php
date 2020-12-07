@@ -30,7 +30,7 @@ class MGDSoftStackdriverExtension extends Extension
         $container->getDefinition(StackdriverHandler::class)->replaceArgument(2, $config['error_reporting']['enabled']);
         $container->getDefinition(StackdriverHandler::class)->replaceArgument(3, $config['error_reporting']['ignore_400']);
 
-        $credentialsFile = $container->resolveEnvPlaceholders($config['credentials_json_file']);
+        $credentialsFile = $container->resolveEnvPlaceholders($config['credentials_json_file'], true);
         if (!file_exists($credentialsFile)){
             throw new \RuntimeException("Google Service account credentials are required");
         }

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace MGDSoft\Stackdriver\Tests\Unit\Logger;
+namespace Tests\Unit\Logger;
 
 use Google\Cloud\Core\Report\EmptyMetadataProvider;
 use Google\Cloud\Logging\LoggingClient;
