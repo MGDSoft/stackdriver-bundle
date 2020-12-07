@@ -17,7 +17,8 @@ composer req mgdsoft/stackdriver-bundle
 ```
 
 Configure env var "GOOGLE_SERVICE_ACCOUNT" in your .env file.
-And finally configure like simple monolog service handler and enjoy it.
+
+Finally configure like simple monolog service handler and enjoy it.
 
 ```yaml
 # /config/packages/prod/monolog.yaml
