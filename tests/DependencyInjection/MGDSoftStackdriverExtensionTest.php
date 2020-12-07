@@ -26,7 +26,7 @@ class MGDSoftStackdriverExtensionTest extends TestCase
             $configDefault
         ]);
 
-        $this->assertNotNull($container->hasDefinition(LoggingClient::class));
+        $this->assertNotNull($container->hasDefinition('mgd_logging_client'));
         $this->assertNotNull($container->hasDefinition(StackdriverHandler::class));
     }
 
