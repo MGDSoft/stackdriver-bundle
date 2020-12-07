@@ -26,7 +26,7 @@ class MGDSoftStackdriverExtension extends Extension
         $loader->load('services.yaml');
 
         $container->getDefinition(StackdriverHandler::class)->replaceArgument(0, $config['level']);
-        $container->getDefinition(StackdriverHandler::class)->replaceArgument(1, $container->resolveEnvPlaceholders($config['log_name']));
+        $container->getDefinition(StackdriverHandler::class)->replaceArgument(1, $container->resolveEnvPlaceholders($config['log_name'], true));
         $container->getDefinition(StackdriverHandler::class)->replaceArgument(2, $config['error_reporting']['enabled']);
         $container->getDefinition(StackdriverHandler::class)->replaceArgument(3, $config['error_reporting']['ignore_400']);
 
