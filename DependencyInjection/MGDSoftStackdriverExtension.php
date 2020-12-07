@@ -12,6 +12,11 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class MGDSoftStackdriverExtension extends Extension
 {
+    public function getConfiguration(array $config, ContainerBuilder $container)
+    {
+        return new Configuration();
+    }
+
     public function load(array $configs, ContainerBuilder $container)
     {
         $configuration = new Configuration();
@@ -24,6 +29,10 @@ class MGDSoftStackdriverExtension extends Extension
         $container->getDefinition(StackdriverHandler::class)->replaceArgument(3, $config['log_name']);
         $container->getDefinition(StackdriverHandler::class)->replaceArgument(4, $config['error_reporting']['enabled']);
         $container->getDefinition(StackdriverHandler::class)->replaceArgument(5, $config['error_reporting']['ignore_400']);
+
+        if (!file_exists($config['credentials_json_file'])){
+            throw new \RuntimeException("Google Service account credentials are required");
+        }
 
         $gcloudCrendentials= json_decode(file_get_contents($config['credentials_json_file']), true);
 
