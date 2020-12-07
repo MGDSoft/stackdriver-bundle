@@ -1,8 +1,6 @@
 mgd_stackdriver:
     credentials_json_file: "%kernel.project_dir%/config/keys/google_service_account.json"
 
-## Default values
-#
 #    level: info
 #    log_name: ~ # It takes service id fron $_ENV vars
 #    error_reporting:
