@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
-class MGDSoftStackdriverExtension extends Extension
+class MgdsoftStackdriverExtension extends Extension
 {
     public function getConfiguration(array $config, ContainerBuilder $container)
     {
@@ -47,8 +47,4 @@ class MGDSoftStackdriverExtension extends Extension
         $def->replaceArgument(4, $container->getDefinition('mgd_logging_client'));
     }
 
-    public function getAlias()
-    {
-        return 'mgd_stackdriver';
-    }
 }

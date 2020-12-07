@@ -2,10 +2,9 @@
 
 namespace MGDSoft\Stackdriver\tests\DependencyInjection;
 
-use Google\Cloud\Logging\LoggingClient;
 use MGDSoft\Stackdriver\DependencyInjection\Configuration;
 use MGDSoft\Stackdriver\Logger\Handler\StackdriverHandler;
-use MGDSoft\Stackdriver\MGDSoftStackdriverBundle;
+use MGDSoft\Stackdriver\MgdsoftStackdriverBundle;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -40,7 +39,7 @@ class MGDSoftStackdriverExtensionTest extends TestCase
 
     private function getContainerForConfigLoad(array $configs)
     {
-        $bundle = new MGDSoftStackdriverBundle();
+        $bundle = new MgdsoftStackdriverBundle();
         $extension = $bundle->getContainerExtension();
 
         $container = new ContainerBuilder();
