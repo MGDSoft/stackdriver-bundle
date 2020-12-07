@@ -25,10 +25,11 @@ class MGDSoftStackdriverExtension extends Extension
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yaml');
 
-        $container->getDefinition(StackdriverHandler::class)->replaceArgument(0, $config['level']);
-        $container->getDefinition(StackdriverHandler::class)->replaceArgument(1, $container->resolveEnvPlaceholders($config['log_name'], true));
-        $container->getDefinition(StackdriverHandler::class)->replaceArgument(2, $config['error_reporting']['enabled']);
-        $container->getDefinition(StackdriverHandler::class)->replaceArgument(3, $config['error_reporting']['ignore_400']);
+        $def = $container->getDefinition(StackdriverHandler::class);
+        $def->replaceArgument(0, $config['level']);
+        $def->replaceArgument(1, $container->resolveEnvPlaceholders($config['log_name'], true));
+        $def->replaceArgument(2, $config['error_reporting']['enabled']);
+        $def->replaceArgument(3, $config['error_reporting']['ignore_400']);
 
         $credentialsFile = $container->resolveEnvPlaceholders($config['credentials_json_file'], true);
         if (!file_exists($credentialsFile)){
@@ -42,7 +43,6 @@ class MGDSoftStackdriverExtension extends Extension
         // batch multiple logs into one single RPC calls:
         $loggingClientOptions['batchEnabled'] = true;
 
-        $client = new LoggingClient($loggingClientOptions);
-        $container->addDefinitions([ new Definition($client) ]);
+        $container->addDefinitions([ new Definition(LoggingClient::class, [$loggingClientOptions]) ]);
     }
 }
