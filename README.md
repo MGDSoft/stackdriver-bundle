@@ -2,17 +2,15 @@
 
 Log all records in Stackdriver using this bundle. Some features
 
-- Error reporting send notifications (by exception or only with log level error)
-- Follow logs from same request with label requestId
+- Error reporting send notifications (by exception or log level error)
 - Create correct metadata from $_ENV vars
 - Auto create logname ${gcloud_service}-symfony.log
+- track logs from same request with label requestId
 - Track current user
 
 ### Installation
 
-This bundle use auto recipes from https://github.com/symfony/recipes-contrib, to enable this recipe needs enable with the following command 
-
- 
+This bundle use auto recipes from https://github.com/symfony/recipes-contrib, to enable execute 
 
 ```sh
 composer config extra.symfony.allow-contrib true
@@ -24,9 +22,11 @@ Install the bundle...
 composer req mgdsoft/stackdriver-bundle
 ```
 
+The bundle  will be configured only for prod environment see **packages/prod/mgdsoft_stackdriver.yaml** for more info.
+
 Configure env var "GOOGLE_SERVICE_ACCOUNT" in your .env file. Verify project_id is present in .json file
 
-Finally configure like simple monolog service handler and enjoy it.
+Finally configure like simple monolog service handler and enjoy it.  
 
 ```yaml
 # /config/packages/prod/monolog.yaml
@@ -37,10 +37,18 @@ monolog:
             id: MGDSoft\Stackdriver\Logger\Handler
 ```
 
-By default all errors are reported, if you want to disable reports see the config 
+By default all errors are reported, if you want to disable update bundle config 
 
-```sh
-./bin/console deb:config MGDSoftStackdriverBundle
+```yaml
+#./bin/console config:dump-reference MGDSoftStackdriverBundle
+
+mgdsoft_stackdriver:
+    credentials_json_file: '%kernel.project_dir%/config/keys/google_service_account.json'
+    log_name:               null
+    level:                  info
+    error_reporting:
+        enabled:              true
+        ignore_400:           true
 ```
 
 All pull request are welcome ;-)
