@@ -20,11 +20,5 @@
         "symfony/security-bundle": "^4.4.0",
         "symfony/monolog-bundle": "^3.6",
         "google/cloud": "^0.111.0"
-    },
-    "bundles": {
-        "MGDSoft\\Stackdriver\\MGDSoftStackdriverBundle": ["prod"]
-    },
-    "copy-from-package": {
-        "config/": "%CONFIG_DIR%/"
     }
 }
