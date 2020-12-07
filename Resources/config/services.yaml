@@ -1,0 +1,9 @@
+services:
+    MGDSoft\Stackdriver\Logger\Handler\StackdriverHandler:
+        arguments:
+            - null
+            - null
+            - "@security.helper"
+            - null
+            - null
+            - null

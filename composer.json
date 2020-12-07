@@ -1,0 +1,24 @@
+{
+    "name": "mgdsoft/stackdriver-bundle",
+    "type": "symfony-bundle",
+    "description": "Google Stackdriver monolog handler & error reporting",
+    "keywords": ["gcloud", "error reporting"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Miguel García Domínguez",
+            "email": "miguelgd@mgdsoftware.es"
+        }
+    ],
+    "autoload":{
+        "psr-4":{
+            "MGDSoft\\Stackdriver\\": ""
+        }
+    },
+    "require": {
+        "php": "~7.0",
+        "symfony/security-bundle": "^4.4.0",
+        "symfony/monolog-bundle": "^3.6",
+        "google/cloud": "^0.111.0"
+    }
+}
