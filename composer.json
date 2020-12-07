@@ -15,7 +15,7 @@
             "MGDSoft\\Stackdriver\\": ""
         },
         "exclude-from-classmap": [
-            "/Tests/"
+            "/tests/"
         ]
     },
     "autoload-dev": {
