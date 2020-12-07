@@ -18,7 +18,7 @@ class MGDSoftStackdriverExtensionTest extends TestCase
 
         $configDefault = $processor->processConfiguration(
             $configuration,
-            ['mgd_stackdriver' => ['credentials_json_file' => __DIR__ . '/../recipe/google_service_account.json']]
+            ['mgdsoft_stackdriver' => ['credentials_json_file' => __DIR__ . '/../recipe/google_service_account.json']]
         );
 
         $container = $this->getContainerForConfig([

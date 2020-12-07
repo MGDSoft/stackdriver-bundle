@@ -10,7 +10,7 @@ final class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder('mgd_stackdriver');
+        $treeBuilder = new TreeBuilder('mgdsoft_stackdriver');
 
         $rootNode = $treeBuilder->getRootNode();
 
