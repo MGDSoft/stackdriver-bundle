@@ -6,7 +6,6 @@ use Google\Cloud\Logging\LoggingClient;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\PsrHandler;
 use Monolog\Logger;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -22,36 +21,21 @@ class StackdriverHandler extends PsrHandler
     static protected $requestId = null;
 
     public function __construct(
-        $gcloudCrendentialsJsonPath,
         $level,
         Security $security,
+        LoggingClient $loggingClient,
         $logName = null,
         $errorReportingEnabled = true,
         $errorReportingIgnore400 = true,
-        $loggingClientOptions = [],
         $loggerOptions = [],
         $bubble = true
     )
     {
-        if (!file_exists($gcloudCrendentialsJsonPath)) {
-            throw new \Exception("Gcloud credentials are required");
-        }
-
-        $gcloudCrendentials= json_decode(file_get_contents($gcloudCrendentialsJsonPath), true);
-        $this->projectId = $gcloudCrendentials['project_id'];
-
-        $loggingClientOptions['keyFile']      = $gcloudCrendentials;
-        $loggingClientOptions['projectId']    = $this->projectId;
-        // batch multiple logs into one single RPC calls:
-        $loggingClientOptions['batchEnabled'] = true;
-
-        $client = new LoggingClient($loggingClientOptions);
-
         if (!$logName) {
             $logName = ($_ENV['GAE_SERVICE'] ?? 'local') . '-symfony.log';
         }
 
-        $this->logger                  = $client->psrLogger($logName, $loggerOptions);
+        $this->logger                  = $loggingClient->psrLogger($logName, $loggerOptions);
         $this->security                = $security;
         $this->errorReportingEnabled   = $errorReportingEnabled;
         $this->errorReportingIgnore400 = $errorReportingIgnore400;
@@ -63,7 +47,7 @@ class StackdriverHandler extends PsrHandler
         parent::__construct($this->logger, Logger::toMonologLevel($level), $bubble);
     }
 
-    public function handle(array $record)
+    public function handle(array $record): bool
     {
         if (!$this->isHandling($record)) {
             return false;
@@ -77,6 +61,8 @@ class StackdriverHandler extends PsrHandler
             $this->getFormatter()->format($record),
             $record['context']
         );
+
+        return false === $this->bubble;
     }
 
     protected function setStackDriverOptionsFromRecord(array $record): array
@@ -97,7 +83,7 @@ class StackdriverHandler extends PsrHandler
             'resource' => [
                 'type' => 'gae_app',
                 'labels' => [
-                    'proyect_id' => $metadataGCloud->projectId() ?? $this->projectId,
+                    'proyect_id' => $metadataGCloud->projectId() ?? 'local',
                     'version_id' => $metadataGCloud->versionId() ?? 'local',
                     'module_id'  => $metadataGCloud->serviceId() ?? 'local',
                 ]
@@ -121,7 +107,7 @@ class StackdriverHandler extends PsrHandler
         }
 
         if ($this->errorReportingIgnore400
-            && $ex instanceof HttpException && ($ex->getStatusCode() >= 400 && $ex->getStatusCode() < 500) === false
+            && $ex instanceof HttpException && $ex->getStatusCode() >= 400 && $ex->getStatusCode() < 500
         ) {
             return $record;
         }
