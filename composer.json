@@ -20,5 +20,8 @@
         "symfony/security-bundle": "^4.4.0",
         "symfony/monolog-bundle": "^3.6",
         "google/cloud": "^0.111.0"
+    },
+    "copy-from-package": {
+        "config": "%CONFIG_DIR%"
     }
 }

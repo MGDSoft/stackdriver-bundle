@@ -17,7 +17,8 @@ final class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->scalarNode('credentials_json_file')->defaultValue("%kernel.project_dir%/config/keys/google_service_account.json")->end()
-
+                ->scalarNode('log_name')->defaultNull()->end()
+                ->scalarNode('level')->defaultValue('info')->end()
                 ->arrayNode('error_reporting')
                     ->addDefaultsIfNotSet()
                     ->children()
@@ -25,8 +26,6 @@ final class Configuration implements ConfigurationInterface
                         ->booleanNode('ignore_400')->defaultTrue()->end()
                     ->end()
                 ->end()
-                ->scalarNode('log_name')->defaultNull()->end()
-                ->scalarNode('level')->defaultValue('info')->end()
             ->end();
 
         return $treeBuilder;
