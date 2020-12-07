@@ -22,11 +22,11 @@ class StackdriverHandler extends PsrHandler
 
     public function __construct(
         $level,
-        Security $security,
-        LoggingClient $loggingClient,
         $logName = null,
         $errorReportingEnabled = true,
         $errorReportingIgnore400 = true,
+        LoggingClient $loggingClient,
+        Security $security,
         $loggerOptions = [],
         $bubble = true
     )

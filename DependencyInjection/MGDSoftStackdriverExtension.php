@@ -26,15 +26,16 @@ class MGDSoftStackdriverExtension extends Extension
         $loader->load('services.yaml');
 
         $container->getDefinition(StackdriverHandler::class)->replaceArgument(0, $config['level']);
-        $container->getDefinition(StackdriverHandler::class)->replaceArgument(3, $config['log_name']);
-        $container->getDefinition(StackdriverHandler::class)->replaceArgument(4, $config['error_reporting']['enabled']);
-        $container->getDefinition(StackdriverHandler::class)->replaceArgument(5, $config['error_reporting']['ignore_400']);
+        $container->getDefinition(StackdriverHandler::class)->replaceArgument(1, $container->resolveEnvPlaceholders($config['log_name']));
+        $container->getDefinition(StackdriverHandler::class)->replaceArgument(2, $config['error_reporting']['enabled']);
+        $container->getDefinition(StackdriverHandler::class)->replaceArgument(3, $config['error_reporting']['ignore_400']);
 
-        if (!file_exists($config['credentials_json_file'])){
+        $credentialsFile = $container->resolveEnvPlaceholders($config['credentials_json_file']);
+        if (!file_exists($credentialsFile)){
             throw new \RuntimeException("Google Service account credentials are required");
         }
 
-        $gcloudCrendentials= json_decode(file_get_contents($config['credentials_json_file']), true);
+        $gcloudCrendentials= json_decode(file_get_contents($credentialsFile), true);
 
         $loggingClientOptions['keyFile']      = $gcloudCrendentials;
         $loggingClientOptions['projectId']    = $gcloudCrendentials['proyect_id'];

@@ -74,7 +74,7 @@ class StackdriverHandlerTest extends TestCase
             ->willReturn($logger)
         ;
 
-        $handler = new StackdriverHandler('info', $security, $logging, null, $enableReport, $errReportIgnore404);
+        $handler = new StackdriverHandler('info', null, $enableReport, $errReportIgnore404, $logging, $security);
         $handler->setFormatter($this->getIdentityFormatter());
 
         return [$handler, $logger];

@@ -3,7 +3,7 @@ services:
         arguments:
             - null
             - null
+            - null
+            - null
+            - null
             - "@security.helper"
-            - null
-            - null
-            - null
