@@ -5,7 +5,6 @@ namespace MGDSoft\Stackdriver\DependencyInjection;
 use Google\Cloud\Logging\LoggingClient;
 use MGDSoft\Stackdriver\Logger\Handler\StackdriverHandler;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -46,6 +45,10 @@ class MGDSoftStackdriverExtension extends Extension
         $def->replaceArgument(2, $config['error_reporting']['enabled']);
         $def->replaceArgument(3, $config['error_reporting']['ignore_400']);
         $def->replaceArgument(4, $container->getDefinition('mgd_logging_client'));
+    }
 
+    public function getAlias()
+    {
+        return 'mgd_stackdriver';
     }
 }
