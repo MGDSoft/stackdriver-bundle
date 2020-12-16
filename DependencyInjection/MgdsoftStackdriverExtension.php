@@ -20,17 +20,19 @@ class MgdsoftStackdriverExtension extends Extension
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yaml');
 
+        // batch multiple logs into one single RPC calls:
+        $loggingClientOptions = ['batchEnabled' => true];
+
         $credentialsFile = $container->resolveEnvPlaceholders($config['credentials_json_file'], true);
-        if (!file_exists($credentialsFile)){
+        if (file_exists($credentialsFile)){
+
+            $gcloudCrendentials= json_decode(file_get_contents($credentialsFile), true);
+            $loggingClientOptions['keyFile']      = $gcloudCrendentials;
+            $loggingClientOptions['projectId']    = $gcloudCrendentials['project_id'];
+
+        } else if (!isset($_ENV['GOOGLE_CLOUD_PROJECT'])) {
             throw new \RuntimeException("Google Service account credentials are required");
         }
-
-        $gcloudCrendentials= json_decode(file_get_contents($credentialsFile), true);
-
-        $loggingClientOptions['keyFile']      = $gcloudCrendentials;
-        $loggingClientOptions['projectId']    = $gcloudCrendentials['project_id'];
-        // batch multiple logs into one single RPC calls:
-        $loggingClientOptions['batchEnabled'] = true;
 
         $container->setDefinition('mgd_logging_client', new Definition(LoggingClient::class, [$loggingClientOptions]));
 

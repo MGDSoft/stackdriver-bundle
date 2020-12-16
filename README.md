@@ -24,8 +24,8 @@ composer req mgdsoft/stackdriver-bundle
 
 The bundle  will be configured only for prod environment see **packages/prod/mgdsoft_stackdriver.yaml** for more info.
 
-Configure env var "GOOGLE_SERVICE_ACCOUNT" in your .env file. Verify project_id is present in .json file
-
+Inside appengine credentials are configured auto, but in local you must configure **mgdsoft_stackdriver.credentials_json_file**
+  
 Finally configure like simple monolog service handler and enjoy it.  
 
 ```yaml
