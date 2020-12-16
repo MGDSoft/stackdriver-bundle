@@ -25,13 +25,9 @@ class MgdsoftStackdriverExtension extends Extension
 
         $credentialsFile = $container->resolveEnvPlaceholders($config['credentials_json_file'], true);
         if (file_exists($credentialsFile)){
-
             $gcloudCrendentials= json_decode(file_get_contents($credentialsFile), true);
             $loggingClientOptions['keyFile']      = $gcloudCrendentials;
             $loggingClientOptions['projectId']    = $gcloudCrendentials['project_id'];
-
-        } else if (!isset($_ENV['GAE_SERVICE'])) {
-            throw new \RuntimeException("Google Service account credentials are required");
         }
 
         $container->setDefinition('mgd_logging_client', new Definition(LoggingClient::class, [$loggingClientOptions]));
