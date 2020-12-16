@@ -24,7 +24,7 @@ composer req mgdsoft/stackdriver-bundle
 
 The bundle  will be configured only for prod environment see **packages/prod/mgdsoft_stackdriver.yaml** for more info.
 
-Inside appengine credentials are configured auto, but in local you must configure **mgdsoft_stackdriver.credentials_json_file**
+Inside appengine credentials are configured auto optionally, but to test in local you must to configure **mgdsoft_stackdriver.credentials_json_file**
   
 Finally configure like simple monolog service handler and enjoy it.  
 
