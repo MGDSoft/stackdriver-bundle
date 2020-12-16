@@ -30,7 +30,7 @@ class MgdsoftStackdriverExtension extends Extension
             $loggingClientOptions['keyFile']      = $gcloudCrendentials;
             $loggingClientOptions['projectId']    = $gcloudCrendentials['project_id'];
 
-        } else if (!isset($_ENV['GOOGLE_CLOUD_PROJECT'])) {
+        } else if (!isset($_ENV['GAE_SERVICE'])) {
             throw new \RuntimeException("Google Service account credentials are required");
         }
 
