@@ -32,7 +32,7 @@ class StackdriverHandler extends PsrHandler
     )
     {
         if (!$logName) {
-            $logName = ($_ENV['GAE_SERVICE'] ?? 'local') . '-symfony.log';
+            $logName = (getenv(['GAE_SERVICE']) ?? 'local') . '-symfony.log';
         }
 
         $this->logger                  = $loggingClient->psrLogger($logName, $loggerOptions);
