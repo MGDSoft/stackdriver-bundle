@@ -24,7 +24,7 @@ composer req mgdsoft/stackdriver-bundle
 
 The bundle  will be configured only for prod environment see **packages/prod/mgdsoft_stackdriver.yaml** for more info.
 
-Inside appengine credentials are configured auto optionally, but to test in local you must to configure **mgdsoft_stackdriver.credentials_json_file**
+Inside appengine credentials are configured auto, but to test in local you must set **mgdsoft_stackdriver.credentials_json_file**
   
 Finally configure like simple monolog service handler and enjoy it.  
 
@@ -43,7 +43,7 @@ By default all errors are reported, if you want to disable update bundle config
 #./bin/console config:dump-reference MGDSoftStackdriverBundle
 
 mgdsoft_stackdriver:
-    credentials_json_file: '%kernel.project_dir%/config/keys/google_service_account.json'
+    credentials_json_file:  null
     log_name:               null
     level:                  info
     error_reporting:
