@@ -126,11 +126,11 @@ class StackdriverHandler extends PsrHandler
                     'module_id'  => $moduleId,
                 ]
             ],
-            'trace' => [sprintf(
+            'trace' => sprintf(
                 'projects/%s/traces/%s',
                 $proyect,
                 $traceId
-            )]
+            )
         ];
 
         return $record;
