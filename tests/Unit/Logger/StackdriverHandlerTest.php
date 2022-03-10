@@ -28,7 +28,7 @@ class StackdriverHandlerTest extends TestCase
             $this->assertEquals($level, 'ERROR');
             $this->assertIsArray($data['reportLocation'], 'ERROR');
             $this->assertEquals($data['@type'], 'type.googleapis.com/google.devtools.clouderrorreporting.v1beta1.ReportedErrorEvent');
-        }));;
+        }));
 
         $handler->handle($this->getRecord(Logger::ERROR, 'test'));
     }
@@ -39,18 +39,30 @@ class StackdriverHandlerTest extends TestCase
         $logger->expects($this->any())->method('log')->will($this->returnCallback(function($level, $message, $data) {
             $this->assertEquals($level, 'ERROR');
             $this->assertArrayNotHasKey('reportLocation', $data);
-        }));;
+        }));
 
         $handler->handle($this->getRecord(Logger::ERROR, 'test'));
+    }
+
+    public function testNotIgnore400Report()
+    {
+        list($handler, $logger) = $this->createStackDriverHandler(true, false);
+        $logger->expects($this->any())->method('log')->will($this->returnCallback(function($level, $message, $data) {
+            $this->assertEquals($level, 'ERROR');
+            $this->assertArrayHasKey('reportLocation', $data);
+        }));
+
+        $record = $this->getRecord(Logger::ERROR, 'test', ['exception' => new NotFoundHttpException()]);
+        $handler->handle($record);
     }
 
     public function testIgnore400Report()
     {
         list($handler, $logger) = $this->createStackDriverHandler();
         $logger->expects($this->any())->method('log')->will($this->returnCallback(function($level, $message, $data) {
-            $this->assertEquals($level, 'ERROR');
+            $this->assertEquals($level, 'WARNING');
             $this->assertArrayNotHasKey('reportLocation', $data);
-        }));;
+        }));
 
         $record = $this->getRecord(Logger::ERROR, 'test', ['exception' => new NotFoundHttpException()]);
         $handler->handle($record);

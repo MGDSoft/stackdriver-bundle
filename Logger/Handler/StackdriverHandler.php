@@ -3,6 +3,7 @@
 namespace MGDSoft\Stackdriver\Logger\Handler;
 
 use Google\Cloud\Logging\LoggingClient;
+use MGDSoft\Stackdriver\GoogleCloud\Report\GAEFlexMetadataExtendedProvider;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\PsrHandler;
 use Monolog\Logger;
@@ -35,6 +36,11 @@ class StackdriverHandler extends PsrHandler
             $logName = (getenv('GAE_SERVICE') ?? 'local') . '-symfony.log';
         }
 
+        if (getenv('GAE_INSTANCE', null)
+            && (isset($server['GAE_ENV']) && $server['GAE_ENV'] === 'standard') == false) {
+            $loggerOptions['metadataProvider'] = new GAEFlexMetadataExtendedProvider($_SERVER);
+        }
+
         $this->logger                  = $loggingClient->psrLogger($logName, $loggerOptions);
         $this->security                = $security;
         $this->errorReportingEnabled   = $errorReportingEnabled;
@@ -53,16 +59,38 @@ class StackdriverHandler extends PsrHandler
             return false;
         }
 
+        $record = $this->reconfigureRecord($record);
         $record = $this->setStackDriverOptionsFromRecord($record);
         $record = $this->setReportError($record);
 
-        $this->logger->log(
-            $record['level_name'],
-            $this->getFormatter()->format($record),
-            $record['context']
-        );
+        try {
+            $this->logger->log(
+                $record['level_name'],
+                $this->getFormatter()->format($record),
+                $record['context']
+            );
+        }catch (\InvalidArgumentException $e) {
+            // sending without context
+            $this->logger->log($record['level_name'], $this->getFormatter()->format($record));
+        }
 
         return false === $this->bubble;
+    }
+
+    protected function reconfigureRecord(array $record): array
+    {
+        $ex = $record['context']['exception'] ?? null;
+
+        if ($this->errorReportingIgnore400
+            && $ex
+            && $ex instanceof HttpException && $ex->getStatusCode() >= 400 && $ex->getStatusCode() < 500
+            && $record['level'] >= Logger::ERROR
+        ) {
+            $record['level']      = Logger::WARNING;
+            $record['level_name'] = Logger::getLevelName($record['level']);
+        }
+
+        return $record;
     }
 
     protected function setStackDriverOptionsFromRecord(array $record): array
@@ -71,7 +99,17 @@ class StackdriverHandler extends PsrHandler
 
         $userName = 'unknown';
         if (($user = $this->security->getUser()) && $user instanceof UserInterface) {
-            $userName = $user->getUsername();
+            $userName = $user->getUserIdentifier();
+        }
+
+        $proyect  = $metadataGCloud->projectId() ?? 'local';
+        $version  = $metadataGCloud->versionId() ?? 'local';
+        $moduleId = $metadataGCloud->serviceId() ?? 'local';
+
+        if (isset($_SERVER['HTTP_X_CLOUD_TRACE_CONTEXT'])) {
+            $traceId  = substr($_SERVER['HTTP_X_CLOUD_TRACE_CONTEXT'], 0, 32);
+        } else {
+            $traceId = static::$requestId;
         }
 
         $record['context']['stackdriverOptions'] = [
@@ -83,11 +121,16 @@ class StackdriverHandler extends PsrHandler
             'resource' => [
                 'type' => 'gae_app',
                 'labels' => [
-                    'proyect_id' => $metadataGCloud->projectId() ?? 'local',
-                    'version_id' => $metadataGCloud->versionId() ?? 'local',
-                    'module_id'  => $metadataGCloud->serviceId() ?? 'local',
+                    'proyect_id' => $proyect,
+                    'version_id' => $version,
+                    'module_id'  => $moduleId,
                 ]
             ],
+            'trace' => [sprintf(
+                'projects/%s/traces/%s',
+                $proyect,
+                $traceId
+            )]
         ];
 
         return $record;
@@ -95,7 +138,6 @@ class StackdriverHandler extends PsrHandler
 
     protected function setReportError(array $record): array
     {
-
         if ($record['level'] < Logger::ERROR || !$this->errorReportingEnabled){
             return $record;
         }
