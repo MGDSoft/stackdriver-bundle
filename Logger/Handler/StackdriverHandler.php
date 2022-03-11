@@ -102,16 +102,6 @@ class StackdriverHandler extends PsrHandler
             $userName = $user->getUserIdentifier();
         }
 
-        $proyect  = $metadataGCloud->projectId() ?? 'local';
-        $version  = $metadataGCloud->versionId() ?? 'local';
-        $moduleId = $metadataGCloud->serviceId() ?? 'local';
-
-        if (isset($_SERVER['HTTP_X_CLOUD_TRACE_CONTEXT'])) {
-            $traceId  = substr($_SERVER['HTTP_X_CLOUD_TRACE_CONTEXT'], 0, 32);
-        } else {
-            $traceId = static::$requestId;
-        }
-
         $record['context']['stackdriverOptions'] = [
             'labels'   => [
                 'channel'   => $record['channel'],
@@ -121,16 +111,11 @@ class StackdriverHandler extends PsrHandler
             'resource' => [
                 'type' => 'gae_app',
                 'labels' => [
-                    'proyect_id' => $proyect,
-                    'version_id' => $version,
-                    'module_id'  => $moduleId,
+                    'proyect_id' => $metadataGCloud->projectId() ?? 'local',
+                    'version_id' => $metadataGCloud->versionId() ?? 'local',
+                    'module_id'  => $metadataGCloud->serviceId() ?? 'local',
                 ]
-            ],
-            'trace' => sprintf(
-                'projects/%s/traces/%s',
-                $proyect,
-                $traceId
-            )
+            ]
         ];
 
         return $record;
