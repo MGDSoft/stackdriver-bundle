@@ -19,7 +19,7 @@ class StackdriverHandler extends PsrHandler
     protected $errorReportingEnabled;
     protected $errorReportingIgnore400;
 
-    static protected $requestId = null;
+    static public $requestId = null;
 
     public function __construct(
         $level,
@@ -99,7 +99,7 @@ class StackdriverHandler extends PsrHandler
 
         $userName = 'unknown';
         if (($user = $this->security->getUser()) && $user instanceof UserInterface) {
-            $userName = $user->getUserIdentifier();
+            $userName = $user->getUsername();
         }
 
         $record['context']['stackdriverOptions'] = [
@@ -111,9 +111,9 @@ class StackdriverHandler extends PsrHandler
             'resource' => [
                 'type' => 'gae_app',
                 'labels' => [
-                    'proyect_id' => $metadataGCloud->projectId() ?? 'local',
-                    'version_id' => $metadataGCloud->versionId() ?? 'local',
-                    'module_id'  => $metadataGCloud->serviceId() ?? 'local',
+                    'proyect_id' => $metadataGCloud->projectId(),
+                    'version_id' => $metadataGCloud->versionId(),
+                    'module_id'  => $metadataGCloud->serviceId(),
                 ]
             ]
         ];
