@@ -1,4 +1,4 @@
-# GoogleCloud Stackdriver Bundle [![Build Status](https://travis-ci.com/MGDSoft/stackdriver-bundle.svg?branch=master)](https://travis-ci.com/MGDSoft/stackdriver-bundle)
+# GoogleCloud Stackdriver Bundle [![Build Status](https://travis-ci.com/MGDSoft/stackdriver-bundle.svg?branch=master)](https://app.travis-ci.com/github/MGDSoft/stackdriver-bundle)
 
 Log all records in Stackdriver using this bundle. Some features
 
